@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #calculator {
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 48px;
+      height: 48px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #history {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="calculator">
+    <input type="text" id="display" disabled>
+    <br>
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button onclick="appendValue('+')">+</button>
+    <br>
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button onclick="appendValue('-')">-</button>
+    <br>
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button onclick="appendValue('*')">*</button>
+    <br>
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="clearDisplay()">C</button>
+    <button onclick="appendValue('/')">/</button>
+    <br>
+    <div id="history">
+      <h3>History</h3>
+      <ul id="historyList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const historyList = document.getElementById('historyList');
+
+    function appendValue(value) {
+      display.value += value;
+    }
+
+    function clearDisplay() {
+      display.value = '';
+    }
+
+    function calculate() {
+      try {
+        const result = eval(display.value);
+        display.value = result;
+        saveToHistory(display.value);
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    function saveToHistory(result) {
+      const historyItem = document.createElement('li');
+      historyItem.textContent = result;
+      historyList.appendChild(historyItem);
+
+      // Save to local storage
+      const historyData = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+      historyData.push(result);
+      localStorage.setItem('calculatorHistory', JSON.stringify(historyData));
+    }
+
+    // Load history from local storage on page load
+    window.onload = function() {
+      const historyData = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+      historyData.forEach(item => {
+        const historyItem = document.createElement('li');
+        historyItem.textContent = item;
+        historyList.appendChild(historyItem);
+      });
+    };
+  </script>
+</body>
+</html>
